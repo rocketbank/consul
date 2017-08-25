@@ -41,7 +41,7 @@ module Consul
     private
 
     def test_environment?
-      respond_to?(Rails) && Rails.env.test?
+      defined?(Rails) && Rails.env.test?
     end
   end
 end
