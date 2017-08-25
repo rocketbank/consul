@@ -9,11 +9,9 @@ module Consul
 
     def initialize
       Diplomat.configure do |config|
-        config.url = ENV['CONSUL_URL'] || ''
+        config.url = ENV['CONSUL_URL'] || 'http://localhost'
         config.options = { ssl: { version: :TLSv1_2 } }
       end
-      @options = Diplomat::Kv.get(STORAGE_NAME, recurse: true,
-                                                convert_to_hash: true)
     end
 
     def self.get(option)
@@ -31,6 +29,18 @@ module Consul
 
     def get(option)
       options[STORAGE_NAME][option]
+    end
+
+    def options
+      return { STORAGE_NAME => {} } if test_environment?
+      @options ||= Diplomat::Kv.get(STORAGE_NAME, recurse: true,
+                                                  convert_to_hash: true)
+    end
+
+    private
+
+    def test_environment?
+      respond_to?(Rails) && Rails.env.test?
     end
   end
 end
