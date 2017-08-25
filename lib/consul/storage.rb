@@ -20,10 +20,6 @@ module Consul
       nil
     end
 
-    def self.raise_attribute_error(name)
-      raise ConfigurationError, "#{name} env variable is blank"
-    end
-
     def get(option)
       options[STORAGE_NAME.to_s][option]
     end
@@ -39,6 +35,10 @@ module Consul
     end
 
     private
+
+    def raise_attribute_error(name)
+      raise ConfigurationError, "#{name} env variable is blank"
+    end
 
     def test_environment?
       defined?(Rails) && Rails.env.test?
