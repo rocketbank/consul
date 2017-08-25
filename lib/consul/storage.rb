@@ -15,9 +15,6 @@ module Consul
     end
 
     def self.get(option)
-      raise_attribute_error('CONSUL_URL') if ENV['CONSUL_URL'].to_s.empty?
-      raise_attribute_error('CONSUL_NAMESPACE') if STORAGE_NAME.to_s.empty?
-
       instance.get(option)
     rescue Diplomat::KeyNotFound
       nil
@@ -28,11 +25,15 @@ module Consul
     end
 
     def get(option)
-      options[STORAGE_NAME][option]
+      options[STORAGE_NAME.to_s][option]
     end
 
     def options
-      return { STORAGE_NAME => {} } if test_environment?
+      return { '' => {} } if test_environment?
+
+      raise_attribute_error('CONSUL_URL') if ENV['CONSUL_URL'].to_s.empty?
+      raise_attribute_error('CONSUL_NAMESPACE') if STORAGE_NAME.to_s.empty?
+
       @options ||= Diplomat::Kv.get(STORAGE_NAME, recurse: true,
                                                   convert_to_hash: true)
     end
