@@ -1,8 +1,9 @@
 require 'singleton'
 
 module Consul
+  class ConfigurationError < StandardError; end
   class Storage
-    STORAGE_NAME = ENV.fetch('CONSUL_NAMESPACE', 'default')
+    STORAGE_NAME = ENV['CONSUL_NAMESPACE']
     include Singleton
     attr_reader :options
 
@@ -16,9 +17,16 @@ module Consul
     end
 
     def self.get(option)
+      raise_attribute_error('CONSUL_URL') if ENV['CONSUL_URL'].to_s.empty?
+      raise_attribute_error('CONSUL_NAMESPACE') if STORAGE_NAME.to_s.empty?
+
       instance.get(option)
     rescue Diplomat::KeyNotFound
       nil
+    end
+
+    def self.raise_attribute_error(name)
+      raise ConfigurationError, "#{name} env variable is blank"
     end
 
     def get(option)
