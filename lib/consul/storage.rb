@@ -41,7 +41,7 @@ module Consul
     end
 
     def test_environment?
-      defined?(Rails) && Rails.env.test?
+      defined?(Rails) && (Rails.env.test? || Rails.env.development?)
     end
   end
 end
