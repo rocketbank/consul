@@ -1,5 +1,4 @@
 require 'singleton'
-
 module Consul
   class ConfigurationError < StandardError; end
   class Storage
@@ -30,8 +29,9 @@ module Consul
       raise_attribute_error('CONSUL_URL') if ENV['CONSUL_URL'].to_s.empty?
       raise_attribute_error('CONSUL_NAMESPACE') if STORAGE_NAME.to_s.empty?
 
-      @options ||= Diplomat::Kv.get(STORAGE_NAME, recurse: true,
-                                                  convert_to_hash: true)
+      @options = Consul::StorageEntry.get do
+        Diplomat::Kv.get(STORAGE_NAME, recurse: true, convert_to_hash: true)
+      end
     end
 
     private

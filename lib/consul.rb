@@ -1,5 +1,6 @@
 require 'consul/version'
 require 'consul/storage'
+require 'consul/storage_entry'
 require 'diplomat'
 
 module Consul

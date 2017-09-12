@@ -1,11 +1,16 @@
 require "spec_helper"
 
-RSpec.describe Consul do
-  it "has a version number" do
+describe Consul do
+  it 'has a version number' do
     expect(Consul::VERSION).not_to be nil
   end
 
-  it "does something useful" do
-    expect(false).to eq(true)
+  describe '.get' do
+    subject { described_module.get('option') }
+
+    it 'calls for storage' do
+      expect(Consul::Storage).to receive(:get).with('option')
+      subject
+    end
   end
 end
