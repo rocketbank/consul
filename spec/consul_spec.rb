@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe Consul do
   it 'has a version number' do
@@ -6,7 +6,7 @@ describe Consul do
   end
 
   describe '.get' do
-    subject { described_module.get('option') }
+    subject { Consul.get('option') }
 
     it 'calls for storage' do
       expect(Consul::Storage).to receive(:get).with('option')

@@ -9,7 +9,7 @@ module Consul
     def initialize
       Diplomat.configure do |config|
         config.url = ENV['CONSUL_URL'] || 'http://localhost'
-        config.options = { ssl: { version: :TLSv1_2 } }
+        config.options = { ssl: { version: :TLSv1_2 }, request: { timeout: 2 } }
       end
     end
 
@@ -20,7 +20,7 @@ module Consul
     end
 
     def get(option)
-      options[STORAGE_NAME.to_s][option]
+      options.fetch(STORAGE_NAME.to_s, {})[option]
     end
 
     def options
@@ -29,7 +29,7 @@ module Consul
       raise_attribute_error('CONSUL_URL') if ENV['CONSUL_URL'].to_s.empty?
       raise_attribute_error('CONSUL_NAMESPACE') if STORAGE_NAME.to_s.empty?
 
-      @options = Consul::StorageEntry.get do
+      Consul::StorageEntry.get do
         Diplomat::Kv.get(STORAGE_NAME, recurse: true, convert_to_hash: true)
       end
     end
