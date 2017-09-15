@@ -26,7 +26,7 @@ module Consul
     end
 
     def value_or_default
-      retries = RETRY_COUNT
+      retries = RETRY_COUNT + 1
       value = begin
         yield if block_given?
       rescue StandardError => e
@@ -38,6 +38,7 @@ module Consul
         if retries.zero?
           ErrorResult.new
         else
+          sleep(1)
           retry
         end
       end
