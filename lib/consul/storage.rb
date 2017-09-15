@@ -9,7 +9,7 @@ module Consul
     def initialize
       Diplomat.configure do |config|
         config.url = ENV['CONSUL_URL'] || 'http://localhost'
-        config.options = { ssl: { version: :TLSv1_2 }, request: { timeout: 2 } }
+        config.options = { ssl: { version: :TLSv1_2 }, request: { timeout: 5, retry: { max: 5, interval: 0.1 } } }
       end
     end
 

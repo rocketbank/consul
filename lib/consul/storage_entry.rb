@@ -2,6 +2,7 @@ require 'singleton'
 module Consul
   class StorageEntry
     DEFAULT_TTL = 60 * 60 # 1 hour
+    RETRY_COUNT = 3
     include Singleton
     class ErrorResult; end
 
@@ -25,10 +26,16 @@ module Consul
     end
 
     def value_or_default
+      retries = RETRY_COUNT
       value = begin
         yield if block_given?
       rescue StandardError
-        ErrorResult.new
+        retries -= 1
+        if retries.zero?
+          ErrorResult.new
+        else
+          retry
+        end
       end
 
       if value.is_a?(ErrorResult)
