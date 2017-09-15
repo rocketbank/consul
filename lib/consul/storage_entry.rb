@@ -29,7 +29,11 @@ module Consul
       retries = RETRY_COUNT
       value = begin
         yield if block_given?
-      rescue StandardError
+      rescue StandardError => e
+        if debug?
+          puts e.inspect
+          puts e.backtrace
+        end
         retries -= 1
         if retries.zero?
           ErrorResult.new
@@ -42,6 +46,12 @@ module Consul
         return @value.nil? ? {} : @value
       end
       value
+    end
+
+    private
+
+    def debug?
+      ENV.key?('CONSUL_DEBUG')
     end
   end
 end
