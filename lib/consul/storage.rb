@@ -6,13 +6,6 @@ module Consul
     include Singleton
     attr_reader :options
 
-    def initialize
-      Diplomat.configure do |config|
-        config.url = ENV['CONSUL_URL'] || 'http://localhost'
-        config.options = { ssl: { version: :TLSv1_2 }, request: { timeout: 5 } }
-      end
-    end
-
     def self.get(option)
       instance.get(option)
     rescue Diplomat::KeyNotFound
@@ -30,7 +23,8 @@ module Consul
       raise_attribute_error('CONSUL_NAMESPACE') if STORAGE_NAME.to_s.empty?
 
       Consul::StorageEntry.get do
-        Diplomat::Kv.get(STORAGE_NAME, recurse: true, convert_to_hash: true)
+        Diplomat::Kv.get(STORAGE_NAME, recurse: true, convert_to_hash: true,
+                                       transformation: ->(key) { key.to_sym })
       end
     end
 
