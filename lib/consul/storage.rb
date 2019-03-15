@@ -6,13 +6,15 @@ module Consul
     include Singleton
     attr_reader :options
 
-    def self.get(option)
+    def self.get(option = nil)
       instance.get(option)
     rescue Diplomat::KeyNotFound
       nil
     end
 
-    def get(option)
+    def get(option = nil)
+      return options.fetch(STORAGE_NAME.to_s, {}) unless option
+
       options.fetch(STORAGE_NAME.to_s, {})[option]
     end
 
