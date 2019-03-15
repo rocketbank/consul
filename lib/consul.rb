@@ -9,7 +9,7 @@ module Consul
     config.options = { ssl: { version: :TLSv1_2 }, request: { timeout: 5 } }
   end
 
-  def get(option)
+  def get(option = nil)
     Storage.get(option)
   end
   module_function :get
