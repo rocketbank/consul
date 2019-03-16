@@ -1,4 +1,5 @@
 require 'singleton'
+require 'symbolized'
 module Consul
   class ConfigurationError < StandardError; end
   class Storage
