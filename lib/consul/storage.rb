@@ -25,7 +25,7 @@ module Consul
       raise_attribute_error('CONSUL_NAMESPACE') if STORAGE_NAME.to_s.empty?
 
       Consul::StorageEntry.get do
-        Diplomat::Kv.get(STORAGE_NAME, recurse: true, convert_to_hash: true)
+        Diplomat::Kv.get(STORAGE_NAME, recurse: true, convert_to_hash: true).to_symbolized_hash
       end
     end
 
